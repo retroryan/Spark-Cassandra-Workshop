@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<schema name="autoSolrSchema" version="1.5">
+    <types>
+        <fieldType class="org.apache.solr.schema.TrieIntField" name="TrieIntField"/>
+        <fieldType class="org.apache.solr.schema.StrField" name="StrField"/>
+        <fieldType class="org.apache.solr.schema.TextField" name="TextField">
+            <analyzer>
+                <tokenizer class="solr.StandardTokenizerFactory"/>
+                <filter class="solr.LowerCaseFilterFactory"/>
+            </analyzer>
+        </fieldType>
+    </types>
+    <fields>
+        <field indexed="true" multiValued="false" name="chapter" stored="true" type="TrieIntField"/>
+        <field indexed="true" multiValued="false" name="book" stored="true" type="StrField"/>
+        <field indexed="true" multiValued="false" name="body" stored="true" type="TextField"/>
+        <field indexed="true" multiValued="false" name="verse" stored="true" type="TrieIntField"/>
+    </fields>
+    <uniqueKey>(book,chapter)</uniqueKey>
+</schema>
