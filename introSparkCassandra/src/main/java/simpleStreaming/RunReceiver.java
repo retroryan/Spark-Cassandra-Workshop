@@ -61,6 +61,16 @@ public class RunReceiver {
 
 
     private static void basicWordsMapAndSave(JavaReceiverInputDStream<String> lines) {
+        JavaPairDStream<String, Integer> wordMap = lines.flatMap(word -> Arrays.asList(word.split("\\s+")))
+                .mapToPair(word -> new Tuple2<>(word.toLowerCase(), 1))
+                .reduceByKeyAndWindow((keyCount, wordCount) -> keyCount + wordCount, getDurationsSeconds(30), getDurationsSeconds(10));  // Reduce last 30 seconds of data, every 10 seconds
+
+
+        JavaDStream<WordCount> wordCountStream = wordMap.map(wordCountPair -> new WordCount(wordCountPair._1(), wordCountPair._2(), new DateTime()));
+
+        javaFunctions(wordCountStream)
+                .writerBuilder("streamdemo", "wordcount", mapToRow(WordCount.class))
+                .saveToCassandra();
 
 
     }

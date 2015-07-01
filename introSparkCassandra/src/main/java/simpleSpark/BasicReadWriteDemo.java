@@ -2,9 +2,11 @@ package simpleSpark;
 
 import com.datastax.driver.core.Session;
 import com.datastax.spark.connector.cql.CassandraConnector;
+import com.datastax.spark.connector.japi.CassandraJavaUtil;
 import com.datastax.spark.connector.japi.CassandraRow;
 import com.datastax.spark.connector.japi.RDDJavaFunctions;
 import com.datastax.spark.connector.japi.SparkContextJavaFunctions;
+import com.datastax.spark.connector.japi.rdd.CassandraJavaRDD;
 import com.google.common.base.Objects;
 import org.apache.hadoop.util.StringUtils;
 import org.apache.spark.api.java.JavaPairRDD;
@@ -17,7 +19,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static com.datastax.spark.connector.japi.CassandraJavaUtil.*;
 
 public class BasicReadWriteDemo {
 
@@ -71,9 +72,9 @@ public class BasicReadWriteDemo {
 
         JavaPairRDD<Integer, Person> integerPersonJavaPairRDD = peopleRDD.keyBy(np -> np.getId());
 
-        RDDJavaFunctions<Person> cassandraPersonRDD = javaFunctions(peopleRDD);
+        RDDJavaFunctions<Person> cassandraPersonRDD = CassandraJavaUtil.javaFunctions(peopleRDD);
 
-        cassandraPersonRDD.writerBuilder("test", "people", mapToRow(Person.class)).saveToCassandra();
+        cassandraPersonRDD.writerBuilder("test", "people", CassandraJavaUtil.mapToRow(Person.class)).saveToCassandra();
 
 
 
@@ -84,10 +85,13 @@ public class BasicReadWriteDemo {
     **/
     private static void readPeopleFromCassandra(JavaSparkContext javaSparkContext) {
 
-        SparkContextJavaFunctions sparkContextJavaFunctions = javaFunctions(javaSparkContext);
+        SparkContextJavaFunctions sparkContextJavaFunctions = CassandraJavaUtil.javaFunctions(javaSparkContext);
 
-        JavaRDD<String> readPeopleRDD =  sparkContextJavaFunctions
-                .cassandraTable("test", "people", mapRowTo(Person.class))
+        CassandraJavaRDD<Person> personCassandraJavaRDD = sparkContextJavaFunctions
+                .cassandraTable("test", "people", CassandraJavaUtil.mapRowTo(Person.class));
+
+
+        JavaRDD<String> readPeopleRDD =  personCassandraJavaRDD
                 .map(Person::toString);
 
         System.out.println("Data as Person beans: \n" + StringUtils.join("\n", readPeopleRDD.collect()));
