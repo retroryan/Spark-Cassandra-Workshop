@@ -41,11 +41,6 @@ public class KJVWordCount {
 
         SparkContextJavaFunctions sparkContextJavaFunctions = javaFunctions(javaSparkContext);
 
-        CassandraJavaRDD<CassandraRow> facetedRDD = sparkContextJavaFunctions
-                .cassandraTable("search_demo", "verses")
-                .where("solr_query='body:*baptize*, facet:{field:book}'");
-
-        facetedRDD.collect().forEach(System.out::println);
 
     }
 

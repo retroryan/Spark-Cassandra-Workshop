@@ -31,17 +31,26 @@ For example queries see the [DSE Search Tutorial](http://docs.datastax.com/en/da
 
 ## KJV Word Count Demo - Counting the words in the Bible
 
-* The Application to load and analyze the Bible Verses from Cassandra is in KJVWordCount.  It can be run with:
+* The template class to load and analyze the Bible Verses from Cassandra is in KJVWordCount.  It can be run with:
 
 `dse spark-submit --class simpleSpark.KJVWordCount ./target/SearchAnalyticsDemo-0.1.jar`
+
+* Search and Analytics can be combined to find and analyze specific data.  In this exercise we will use search for verses that contain specific words and then count the number of words in that verse.
+
+* Data can be filtered using a solr quer by adding a where clause to the function that loads the data.  For example:
+
+```
+        sparkContextJavaFunctions
+              .cassandraTable("search_demo", "verses", mapRowTo(BibleVerse.class))
+              .where("solr_query='body:*Baptize* AND book:mat'");
+```                
+
 
 Additional Functionality is provided on RDD's that are key / value pairs.  These RDDs are called pair RDDs.  They provide additional APIs that are performed on each key in the RDD.  Some common examples are reduceByKey which performs a reduce function that operates on each key.  Or there is a join operation which joins two RDD's by key.  
 
 Pair RDD's are defined using a Tuple of 2.  Tuples are defined as "a finite ordered list of elements".  They can be thought of as a generic container of data. In the case of Pair RDD's the first element is the key and the second element is the value.  
 
 In Java a Pair RDD can be created using the method `mapToPair`.  It operates on each element in an RDD and returns a new element that is a Tuple2.   The method 'mapToPair' then expects a function that takes a single element and returns a pair of key and value.
-
-* Read a book or verse of the Bible from Cassandra and then run a word count on those verses.
 
 * Split each string into a list of words.  Hint - use flatMap and then split each line with `nextLine.split("\\s+")`
 
