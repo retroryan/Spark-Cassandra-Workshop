@@ -76,7 +76,7 @@ In the next exercise we are going to read data out of Cassandra into a Spark RDD
 
 *  Using the `sparkContextJavaFunctions` load a Cassandra table into an Java RDD
 
-  `cassandraTable("test", "people"  `
+  `cassandraTable("test", "people" ...  `
 
 * Then use the `mapRowTo` parameter to map each row to a Person automatically:
 
@@ -92,9 +92,11 @@ In the next exercise we are going to read data out of Cassandra into a Spark RDD
 
 ## Next Steps
 
-[Word Count Exercises](WORD_COUNT.md)
+[Word Count Exercises using Sherlock Holmes](WORD_COUNT.md)
 
-[The next step is the streaming exercies](STREAMING_EXERCISES.md)
+For Word Count Exercises using the KJV of the Bible See the Search Analytics Demo
+
+[See the Streaming Exercises to Learn about Spark Streaming](STREAMING_EXERCISES.md)
 
 ## Further Documentation
 

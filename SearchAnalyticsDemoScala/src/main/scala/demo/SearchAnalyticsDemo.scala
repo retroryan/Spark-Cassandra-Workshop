@@ -29,10 +29,9 @@ object SearchAnalyticsDemo {
 
     CassandraConnector(conf).withSessionDo { session =>
       session.execute( """CREATE KEYSPACE IF NOT EXISTS search_demo with replication = {'class' : 'SimpleStrategy', 'replication_factor' : 1 }""")
-      session.execute( """use search_demo""")
 
       session.execute(
-        """CREATE TABLE IF NOT EXISTS kjv (
+        """CREATE TABLE IF NOT EXISTS search_demo.kjv (
           |book text ,
           |chapter int,
           |verse int,

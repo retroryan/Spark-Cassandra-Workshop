@@ -81,6 +81,8 @@ public class BasicReadWriteDemo {
     **/
     private static void readPeopleFromCassandra(JavaSparkContext javaSparkContext) {
 
+        SparkContextJavaFunctions sparkContextJavaFunctions = javaFunctions(javaSparkContext);
+
         //read a list of people out of Cassandra here
 
         //JavaRDD<String> readPeopleRDD = null;
