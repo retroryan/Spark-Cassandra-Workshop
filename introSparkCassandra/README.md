@@ -47,6 +47,7 @@ In the next series of exercises we are going to be working the Spark Master that
 
 ```
 mvn package
+
 dse spark-submit --class simpleSpark.BasicReadWriteDemo ./target/IntroSparkCassandra-0.1.jar
 ```
 

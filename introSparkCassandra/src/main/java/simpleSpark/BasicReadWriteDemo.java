@@ -66,13 +66,16 @@ public class BasicReadWriteDemo {
                 Person.newInstance(3, "Andrew", new Date())
         );
 
+
         JavaRDD<Person> peopleRDD = javaSparkContext.parallelize(people);
 
         JavaPairRDD<Integer, Person> integerPersonJavaPairRDD = peopleRDD.keyBy(np -> np.getId());
 
         RDDJavaFunctions<Person> cassandraPersonRDD = javaFunctions(peopleRDD);
 
-        //save the list of cassandraPersonRDD to Cassandra here
+        cassandraPersonRDD.writerBuilder("test", "people", mapToRow(Person.class)).saveToCassandra();
+
+
 
     }
 
@@ -83,14 +86,22 @@ public class BasicReadWriteDemo {
 
         SparkContextJavaFunctions sparkContextJavaFunctions = javaFunctions(javaSparkContext);
 
-        //read a list of people out of Cassandra here
+        JavaRDD<String> readPeopleRDD =  sparkContextJavaFunctions
+                .cassandraTable("test", "people", mapRowTo(Person.class))
+                .map(Person::toString);
 
-        //JavaRDD<String> readPeopleRDD = null;
-        //System.out.println("Data as Person beans: \n" + StringUtils.join("\n", readPeopleRDD.collect()));
+        System.out.println("Data as Person beans: \n" + StringUtils.join("\n", readPeopleRDD.collect()));
 
-        //   select only the id of a person named Anna;
-        //JavaRDD<String> rdd4 = null;
-        //System.out.println("Data with only 'id' column fetched: \n" + StringUtils.join("\n", rdd4.collect()));
+
+        //   select id from test.people where id=45;
+
+        JavaRDD<String> rdd4 = sparkContextJavaFunctions
+                .cassandraTable("test", "people")
+                .select("id")
+                .where("id = 45")
+                .map(CassandraRow::toString);
+
+        System.out.println("Data with only 'id' column fetched: \n" + StringUtils.join("\n", rdd4.collect()));
 
     }
 
